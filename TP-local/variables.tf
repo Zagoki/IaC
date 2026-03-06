@@ -103,3 +103,9 @@ variable "http_port" {
   type        = number
   default     = 80
 }
+
+variable "db_instance_name" {
+  description = "Name of the database EC2 instance"
+  type        = string
+  default     = "database-server"
+}

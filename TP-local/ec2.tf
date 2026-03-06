@@ -40,3 +40,28 @@ resource "aws_instance" "web" {
     Name = var.instance_name
   }
 }
+
+# Create EC2 instance with Database
+resource "aws_instance" "database" {
+  ami             = "ami-12345678"
+  instance_type   = var.instance_type
+  security_groups = [aws_security_group.database.name]
+  key_name        = aws_key_pair.deployer.key_name
+
+  user_data = <<-EOF
+              #!/bin/bash
+              # Install and configure PostgreSQL
+              yum update -y
+              yum install -y postgresql15-server postgresql15-contrib
+              /usr/pgsql-15/bin/initdb /var/lib/pgsql/15/data
+              systemctl start postgresql-15
+              systemctl enable postgresql-15
+              
+              # Basic configuration
+              echo "PostgreSQL 15 database server is configured and running"
+              EOF
+
+  tags = {
+    Name = var.db_instance_name
+  }
+}
