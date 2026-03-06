@@ -17,12 +17,12 @@ EOT
 
 # verify that all client containers can reach nginx via the docker network
 resource "null_resource" "client_check" {
-  count      = var.client_count
+  for_each   = var.server_names
   depends_on = [docker_container.client]
 
   provisioner "local-exec" {
     command = <<-EOT
-powershell -NoProfile -Command "(docker exec ${docker_container.client[count.index].name} curl -s http://nginx/) -match 'Welcome'"
+powershell -NoProfile -Command "(docker exec ${docker_container.client[each.value].name} curl -s http://nginx/) -match 'Welcome'"
 EOT
   }
 }

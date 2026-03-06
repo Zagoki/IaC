@@ -34,8 +34,8 @@ variable "client_container_name" {
   default     = "nginx-client"
 }
 
-variable "client_count" {
-  description = "number of client container instances"
-  type        = number
-  default     = 3
+variable "server_names" {
+  description = "list of server names for client containers"
+  type        = set(string)
+  default     = ["alpha", "beta", "gamma"]
 }
