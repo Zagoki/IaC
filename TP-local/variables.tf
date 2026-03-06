@@ -21,3 +21,15 @@ variable "internal_port" {
   type        = number
   default     = 80
 }
+
+variable "network_name" {
+  description = "Docker network name for nginx and client"
+  type        = string
+  default     = "nginx-net"
+}
+
+variable "client_container_name" {
+  description = "name of the client container"
+  type        = string
+  default     = "nginx-client"
+}

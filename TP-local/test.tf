@@ -14,3 +14,15 @@ powershell -NoProfile -Command "(Invoke-WebRequest -Uri http://localhost:${var.e
 EOT
   }
 }
+
+# verify that the client container can reach nginx via the docker network
+resource "null_resource" "client_check" {
+  depends_on = [docker_container.client]
+
+  provisioner "local-exec" {
+    command = <<-EOT
+powershell -NoProfile -Command "(docker exec ${docker_container.client.name} curl -s http://nginx:80) -match 'Welcome'"
+EOT
+  }
+}
+

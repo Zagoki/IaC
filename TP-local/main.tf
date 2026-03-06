@@ -4,6 +4,10 @@ terraform {
       source  = "kreuzwerker/docker"
       version = "3.5.0"
     }
+    null = {
+      source  = "hashicorp/null"
+      version = "3.2.4"
+    }
   }
 }
 
@@ -15,9 +19,18 @@ resource "docker_image" "nginx" {
   name = var.docker_image_name
 }
 
+resource "docker_network" "app" {
+  name = var.network_name
+}
+
 resource "docker_container" "nginx" {
   name  = var.container_name
   image = docker_image.nginx.image_id
+
+  depends_on = [docker_network.app]
+
+  # networks = [docker_network.app.id]
+
   ports {
     external = var.external_port
     internal = var.internal_port
@@ -25,3 +38,19 @@ resource "docker_container" "nginx" {
     protocol = "tcp"
   }
 }
+
+# second container used to query nginx over the docker network
+resource "docker_container" "client" {
+  name  = "curl-client"
+  image = "appropriate/curl:latest"
+
+  networks_advanced {
+    name    = docker_network.app.name
+    aliases = ["curl-client"]
+  }
+
+  command = ["sh", "-c", "curl -sS http://nginx/ && sleep 3600"]
+
+  depends_on = [docker_container.nginx]
+}
+
