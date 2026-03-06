@@ -79,3 +79,27 @@ variable "machines" {
     error_message = "Region must be one of: eu-west-1, us-east-1, ap-southeast-1."
   }
 }
+
+variable "instance_type" {
+  description = "Type of EC2 instance"
+  type        = string
+  default     = "t2.micro"
+}
+
+variable "instance_name" {
+  description = "Name of the EC2 instance"
+  type        = string
+  default     = "nginx-server"
+}
+
+variable "bucket_name" {
+  description = "Name of the S3 bucket"
+  type        = string
+  default     = "my-bucket"
+}
+
+variable "http_port" {
+  description = "Default HTTP port for the security group"
+  type        = number
+  default     = 80
+}
