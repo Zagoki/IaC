@@ -33,3 +33,9 @@ variable "client_container_name" {
   type        = string
   default     = "nginx-client"
 }
+
+variable "client_count" {
+  description = "number of client container instances"
+  type        = number
+  default     = 3
+}
