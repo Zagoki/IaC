@@ -168,6 +168,30 @@ terraform destroy
 
 ---
 
+
+### Npour deployer sur aws
+
+cd TP-local
+
+# 1. Configurer AWS CLI
+aws configure
+
+# 2. Trouver l'AMI correcte pour votre région
+aws ec2 describe-images --owners amazon \
+  --filters "Name=name,Values=amzn2-ami-hvm-*-x86_64-gp2" \
+  --query 'Images | sort_by(@, &CreationDate) | [-1].ImageId' --output text
+
+# 3. Adapter ec2.tf avec l'AMI trouvée
+
+# 4. Déployer
+terraform init
+terraform apply
+
+# 5. Accéder via SSH
+ssh -i deployer-key.pem ec2-user@<IP_PUBLIQUE>
+
+---
+
 ## 📊 Ressources Créées
 
 | Ressource | Type | Description |
