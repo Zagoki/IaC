@@ -33,7 +33,7 @@ resource "aws_instance" "web" {
               systemctl enable nginx
               
               # Create a simple webpage
-              echo "<h1>Hello from Terraform and LocalStack!</h1>" > /usr/share/nginx/html/index.html
+              echo "<h1>Welcome to Terraform on AWS!</h1>" > /usr/share/nginx/html/index.html
               EOF
 
   tags = {
