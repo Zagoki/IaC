@@ -25,6 +25,11 @@ output "bucket_id" {
   value       = aws_s3_bucket.demo_bucket.id
 }
 
+output "s3_file_url" {
+  description = "Public URL of the uploaded S3 file"
+  value       = "https://${aws_s3_bucket.demo_bucket.bucket}.s3.amazonaws.com/hello-world.txt"
+}
+
 output "database_instance_id" {
   description = "ID of the database EC2 instance"
   value       = aws_instance.database.id
