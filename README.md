@@ -1,2 +1,2 @@
 # IaC
-IaC tps exos
+IaC tps exos et aws
