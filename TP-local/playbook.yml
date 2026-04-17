@@ -1,0 +1,89 @@
+---
+- name: Déploiement de l'infrastructure locale avec Multipass
+  hosts: all
+  become: yes
+  vars:
+    node_version: "18"
+    postgres_version: "15"
+
+  tasks:
+    - name: Mettre à jour le cache des paquets
+      apt:
+        update_cache: yes
+      when: ansible_os_family == "Debian"
+
+- name: Configuration du serveur web
+  hosts: web-server
+  become: yes
+
+  tasks:
+    - name: Installer Docker
+      apt:
+        name: docker.io
+        state: present
+
+    - name: Démarrer et activer Docker
+      service:
+        name: docker
+        state: started
+        enabled: yes
+
+    - name: Créer le répertoire de l'application
+      file:
+        path: /opt/node-app
+        state: directory
+        mode: '0755'
+
+    - name: Copier les fichiers de l'application
+      copy:
+        src: app/
+        dest: /opt/node-app/
+        mode: '0644'
+
+    - name: Construire l'image Docker
+      docker_image:
+        name: node-app
+        source: build
+        build:
+          path: /opt/node-app
+        state: present
+
+    - name: Lancer le conteneur de l'application
+      docker_container:
+        name: node-app-container
+        image: node-app
+        ports:
+          - "3000:3000"
+        state: started
+        restart_policy: always
+
+- name: Configuration du serveur de base de données
+  hosts: db-server
+  become: yes
+
+  tasks:
+    - name: Installer Docker
+      apt:
+        name: docker.io
+        state: present
+
+    - name: Démarrer et activer Docker
+      service:
+        name: docker
+        state: started
+        enabled: yes
+
+    - name: Lancer le conteneur PostgreSQL
+      docker_container:
+        name: postgres-db
+        image: postgres:{{ postgres_version }}
+        env:
+          POSTGRES_DB: app_db
+          POSTGRES_USER: app_user
+          POSTGRES_PASSWORD: secure_password
+        ports:
+          - "5432:5432"
+        volumes:
+          - postgres_data:/var/lib/postgresql/data
+        state: started
+        restart_policy: always
