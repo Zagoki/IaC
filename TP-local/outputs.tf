@@ -13,6 +13,11 @@ output "ssh_command" {
   value       = "ssh -i deployer-key.pem ec2-user@${aws_instance.web.public_ip}"
 }
 
+output "app_url" {
+  description = "URL of the deployed Node.js app"
+  value       = "http://${aws_instance.web.public_ip}"
+}
+
 output "bucket_id" {
   description = "ID of the S3 bucket"
   value       = aws_s3_bucket.demo_bucket.id
